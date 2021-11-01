@@ -19,7 +19,7 @@ async def predict(b64: str = Body(..., embed=True)):
 
     resized_img = img.resize()
 
-    result = detector.run(Encoding.img_to_bytes(resized_img))
+    result, inference_time = detector.run(Encoding.img_to_bytes(resized_img))
     print(result)
 
     img_with_boxes = img.draw_boxes(result["detection_boxes"],
@@ -27,4 +27,4 @@ async def predict(b64: str = Body(..., embed=True)):
                     result["detection_scores"])
     final_b64 = Encoding.img_to_b64(img_with_boxes)
 
-    return { "b64" : final_b64 }
+    return { "b64" : final_b64, "inference_time" : inference_time }

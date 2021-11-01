@@ -15,7 +15,11 @@ class ObjectDetector:
         img = tf.image.decode_image(img_bytes, channels=3, expand_animations=expand_animations)
         converted_img = tf.image.convert_image_dtype(img, tf.float32)[tf.newaxis, ...]
 
+        start_time = time.time()
         result = self.detector(converted_img)
-        result = { key : value.numpy() for key, value in result.items() }
+        end_time = time.time()
 
-        return result
+        result = { key : value.numpy() for key, value in result.items() }
+        inference_time = end_time - start_time
+
+        return (result, inference_time)
