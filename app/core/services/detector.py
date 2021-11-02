@@ -6,7 +6,7 @@ import json
 import time
 
 class ObjectDetector:
-    module_handle = "/code/app/core/models"
+    module_handle = "/code/models"
     valid_class_json_file_path = "/code/app/data/valid_classes.json"
 
     try:
