@@ -1,4 +1,5 @@
 from fastapi import Body, FastAPI, HTTPException
+from typing import Optional
 
 from .core.services.detector import ObjectDetector
 from .core.services.encoding import Encoding
@@ -7,8 +8,12 @@ from .core.services.image_handler import ImageHandler
 app = FastAPI()
 detector = ObjectDetector()
 
-@app.post("/predict")
-async def predict(b64: str = Body(..., embed=True)):
+@app.post("/predict", )
+async def predict(b64: str = Body(...), min_score: Optional[float] = Body(0.2)):
+    if min_score < 0 or min_score > 0.9:
+        raise HTTPException(status_code=400,
+                            detail="Minimum score should be between 0 and 0.9 inclusive.")
+
     img_bytes = Encoding.b64_to_bytes(b64)
     if img_bytes == "":
         raise HTTPException(status_code=400, detail="Payload is not base64-encoded.")
@@ -24,7 +29,8 @@ async def predict(b64: str = Body(..., embed=True)):
 
     img_with_boxes = img.draw_boxes(result["detection_boxes"],
                     result["detection_class_entities"],
-                    result["detection_scores"])
+                    result["detection_scores"],
+                    min_score=min_score)
     final_b64 = Encoding.img_to_b64(img_with_boxes)
 
     return { "b64" : final_b64, "inference_time" : inference_time }
