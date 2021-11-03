@@ -27,7 +27,7 @@ class ImageHandler:
     def is_valid(self):
         return self.img != "" and self.img.format in self.valid_image_set
 
-    def resize(self, new_width=256, new_height=256, overwrite=True):
+    def resize(self, new_width=512, new_height=512, overwrite=True):
         img = ImageOps.fit(self.img, (new_width, new_height), Image.ANTIALIAS)
 
         if overwrite:
