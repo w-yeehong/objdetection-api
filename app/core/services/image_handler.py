@@ -7,6 +7,7 @@ from PIL import ImageOps
 import math # ceil()
 
 class ImageHandler:
+    valid_image_set = { "JPEG", "PNG", "GIF" }
     colors = list(ImageColor.colormap.values())
     try:
         font = ImageFont.truetype("/code/app/fonts/OpenSans-Regular.ttf", 25)
@@ -24,7 +25,7 @@ class ImageHandler:
             self.img.close()
 
     def is_valid(self):
-        return self.img != ""
+        return self.img != "" and self.img.format in self.valid_image_set
 
     def resize(self, new_width=256, new_height=256, overwrite=True):
         img = ImageOps.fit(self.img, (new_width, new_height), Image.ANTIALIAS)
