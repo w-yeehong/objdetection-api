@@ -1,4 +1,5 @@
 from fastapi import Body, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 
 from .core.services.detector import ObjectDetector
@@ -6,6 +7,13 @@ from .core.services.encoding import Encoding
 from .core.services.image_handler import ImageHandler
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 detector = ObjectDetector()
 
 @app.post("/predict", )
@@ -25,7 +33,6 @@ async def predict(b64: str = Body(...), min_score: Optional[float] = Body(0.2)):
     resized_img = img.resize()
 
     result, inference_time = detector.run(Encoding.img_to_bytes(resized_img))
-    print(result)
 
     img_with_boxes = img.draw_boxes(result["detection_boxes"],
                     result["detection_class_entities"],
