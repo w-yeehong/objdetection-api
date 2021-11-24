@@ -25,6 +25,11 @@
           <input type="file" class="form-control" id="imgUploadInput">
         </div>
         <div class="mb-3 clearfix">
+          <input type="checkbox" class="form-check-label" id="resizeImageInput" checked>
+          <label for="resizeImageInput" class="ms-3">Resize Image</label>
+          <div class="form-text" id="resizeImageHelp">Resized images are fixed to a size of 512 x 512 pixels. This may improve inference time for larger images.</div>
+        </div>
+        <div class="mb-3 clearfix">
           <label for="scoreThresholdInput" class="form-label">Min. Score Threshold</label>
           <input type="range" class="form-range" id="scoreThresholdInput" min="0" max="90" value="20" oninput="this.nextElementSibling.firstChild.value = this.value + '%'">
           <div class="form-text float-start"><output id="scoreThresholdOutput"></output></div>
@@ -57,6 +62,7 @@
       async function handleSubmit() {
         const urlStr = document.getElementById("apiUrlInput").value;
         const file = document.getElementById("imgUploadInput").files[0];
+        const shouldResize = document.getElementById("resizeImageInput").checked;
         const minScore = document.getElementById("scoreThresholdInput").value;
 
         if (!isValidUrl(urlStr) || !isValidImg(file) || !isValidScore(minScore)) {
@@ -70,7 +76,7 @@
         }
 
         handleBeforeSend();
-        let data = await sendRequestToApi(urlStr, b64, minScore);
+        let data = await sendRequestToApi(urlStr, b64, shouldResize, minScore);
         if (data === undefined) {
           setDangerAlert("POST request failed to send. Please reattempt.");
         } else if ("b64" in data) {
@@ -83,8 +89,12 @@
         handleAfterSend();
       }
 
-      async function sendRequestToApi(urlStr, b64, minScore) {
-        let payload = JSON.stringify({ "b64": b64, "min_score": minScore / 100 });
+      async function sendRequestToApi(urlStr, b64, shouldResize, minScore) {
+        let payload = JSON.stringify({
+          "b64": b64,
+          "resize_image": shouldResize,
+          "min_score": minScore / 100
+        });
 
         return fetch(urlStr + "/predict", {
           method: "POST",
