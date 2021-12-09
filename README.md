@@ -1,7 +1,7 @@
 # objdetection-api
 
 `objdetection-api` is a REST API built upon the FastAPI framework to provide object detection service based on [a pre-trained model](https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1).
-By default, it detects animals in an image and frame them in a bounding box.
+By default, it detects animals in an image and frames them in a bounding box.
 An example is shown below:
 
 <img src="images/sample-1.jpg" width="250px" />
@@ -107,7 +107,7 @@ The following steps can be performed to enable GPU support.
 The file `app/data/valid_classes.json` can be modified to include custom classes for object detection.
 These classes can be viewed from this [link](https://storage.googleapis.com/openimages/2018_04/class-descriptions-boxable.csv).
 
-For instance, to detect the `Plant` class in images, add the key-value pair `"/m/05s2s" : "Plant"` to the file.
+For instance, to detect plants (the `Plant` class) in any image, add the key-value pair `"/m/05s2s" : "Plant"` to the file.
 
 ## Inference Time
 
